@@ -1,0 +1,35 @@
+<ng-template #mdAlumno let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title">REGISTRAR ALUMNO</h4>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="formAlumno" class="text-center" style="color: #424141">
+            <div class="md-form">
+                <input type="text" formControlName="nombre" class="form-control mb-2" placeholder="NOMBRE" [ngClass]="{ 'is-invalid': formValidatorStatus && a.nombre.errors }">
+                <div *ngIf="formValidatorStatus && formValidator.nombre.errors" class="text-left">
+                    <div *ngIf="a.nombre.errors.required">Nombre es requerido *</div>
+                </div>
+                <input type="text" formControlName="apellido"  class="form-control mb-2" placeholder="APELLIDO" [ngClass]="{ 'is-invalid': formValidatorStatus && a.apellido.errors }" >
+                <div *ngIf="formValidatorStatus && formValidator.apellido.errors" class="text-left"> 
+                    <div *ngIf="a.apellido.errors.required">Apellido es requerido *</div>
+                </div>
+                <input type="email" formControlName="email" class="form-control mb-2" placeholder="EMAIL" [ngClass]="{ 'is-invalid': formValidatorStatus && a.email.errors }">
+                <div *ngIf="formValidatorStatus && formValidator.email.errors" class="text-left">
+                    <div *ngIf="a.email.errors.required">Email es requerido *</div>
+                    <div *ngIf="a.email.errors.email">El email debe ser un email valido</div>
+                </div>
+                <input type="text" formControlName="contacto" class="form-control msb-2" placeholder="CELULAR" [ngClass]="{ 'is-invalid': formValidatorStatus && a.contacto.errors }">
+                <div *ngIf="formValidatorStatus && formValidator.contacto.errors" class="text-left">
+                    <div *ngIf="a.contacto.errors.required">Celular es requerido *</div>
+                    <div *ngIf="a.contacto.errors.minlength">Digite 9 numeros*</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-info" (click)="saveSubmitAlumno()">GUARDAR</button>
+              <button type="button" class="btn btn-danger" (click)="modal.close('Close click')">SALIR</button>
+            </div>
+        </form>
+    </div>
+    
+  </ng-template>
+  <button class="btn btn-success mt-4 py-2 ml-5" (click)="callModalService(mdAlumno)">Nuevo Alumno</button>

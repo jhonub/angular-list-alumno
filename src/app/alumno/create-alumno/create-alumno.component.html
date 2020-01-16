@@ -1,0 +1,56 @@
+<ng-template #mdAlumno let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title">REGISTRAR ALUMNO</h4>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="formAlumno" style="color: #424141">
+            <div class="md-form">
+                <input
+                    type="text"
+                    formControlName="nombre"
+                    class="form-control mb-2"
+                    placeholder="NOMBRE"
+                    [ngClass]="{ 'is-invalid': formValidatorStatus && formValidator.nombre.errors }">
+                <div *ngIf="formValidatorStatus && formValidator.nombre.errors" class="invalid-feedback">
+                    <div *ngIf="formValidator.nombre.errors.required">* Obligatorio</div>
+                </div>
+                <input
+                    type="text"
+                    formControlName="apellido"
+                    class="form-control mb-2"
+                    placeholder="APELLIDO"
+                    [ngClass]="{ 'is-invalid': formValidatorStatus && formValidator.apellido.errors }" >
+                <div *ngIf="formValidatorStatus && formValidator.apellido.errors" class="invalid-feedback"> 
+                    <div *ngIf="formValidator.apellido.errors.required">* Obligatorio</div>
+                </div>
+                <input
+                    type="email"
+                    formControlName="email"
+                    class="form-control mb-2"
+                    placeholder="EMAIL"
+                    [ngClass]="{ 'is-invalid': formValidatorStatus && formValidator.email.errors }">
+                <div *ngIf="formValidatorStatus && formValidator.email.errors" class="invalid-feedback">
+                    <div *ngIf="formValidator.email.errors.required">* Obligatorio</div>
+                    <div *ngIf="formValidator.email.errors.email">El email debe ser un email valido</div>
+                </div>
+                <input
+                    type="text"
+                    formControlName="contacto"
+                    class="form-control msb-2"
+                    placeholder="CELULAR"
+                    [ngClass]="{ 'is-invalid': formValidatorStatus && formValidator.contacto.errors }">
+                <div *ngIf="formValidatorStatus && formValidator.contacto.errors" class="invalid-feedback">
+                    <div *ngIf="formValidator.contacto.errors.required">* Obligatorio</div>
+                    <div *ngIf="formValidator.contacto.errors.minlength">Digite 9 numeros*</div>
+                </div>
+            </div>
+            <div class="modal-footer row">
+              <button type="button" class="btn btn-info" (click)="saveSubmitAlumno()">GUARDAR</button>
+              <button type="button" class="btn btn-danger" (click)="modal.close('Close click')">SALIR</button>
+            </div>
+        </form>
+    </div>
+    
+  </ng-template>
+  <button class="btn btn-success mt-4 py-2 ml-5" *ngIf="typeButton == 1" (click)="callModalService(mdAlumno)">{{ nameButton }}</button>
+  <button class="btn btn-primary btn-xs" *ngIf="typeButton == 2" (click)="callModalService(mdAlumno)">{{ nameButton }}</button>

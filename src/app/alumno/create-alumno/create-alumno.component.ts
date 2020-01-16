@@ -1,7 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-
 
 @Component({
   selector: 'app-create-alumno',
@@ -10,8 +9,14 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 })
 export class CreateAlumnoComponent implements OnInit {
 
+  @Input() idAlumno;
+  @Input() typeButton;
+  @Input() nameButton;
+  @Output() modifyAlumno = new EventEmitter();
+
   public formAlumno: FormGroup;
   public formValidatorStatus: Boolean;
+  public listAlumnos: any;
   public modalReference: NgbModalRef;
 
   get formValidator(){ return this.formAlumno.controls; }
@@ -22,12 +27,26 @@ export class CreateAlumnoComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.inicializator();
+    
   }
 
-  inicializator() {
+  inicializator() {    
     this.formValidatorStatus = false;
+    this.listAlumnos = [];
+    this.inicalizatorLocalStorage();
     this.inicializatorFormAlumno();
+    if(this.idAlumno != null) {
+      this.inicializatorEditAlumno();
+    }
+  }
+
+  inicalizatorLocalStorage() {
+    let data = localStorage.getItem('data');
+    if(data == null) {
+      this.listAlumnos = [];
+    } else {
+      this.listAlumnos = JSON.parse(data);
+    }
   }
 
   inicializatorFormAlumno(){
@@ -38,23 +57,55 @@ export class CreateAlumnoComponent implements OnInit {
       contacto:['',[Validators.required, Validators.minLength(9)]]
     })
   }
+
+  inicializatorEditAlumno() {
+    this.formAlumno.get('nombre').setValue(this.listAlumnos[this.idAlumno].nombre)
+    this.formAlumno.get('apellido').setValue(this.listAlumnos[this.idAlumno].apellido)
+    this.formAlumno.get('email').setValue(this.listAlumnos[this.idAlumno].email)
+    this.formAlumno.get('contacto').setValue(this.listAlumnos[this.idAlumno].contacto)
+  }
   
   saveSubmitAlumno(){
-    console.log(this.formAlumno.value);
-    return
     this.formValidatorStatus = true;
     if (this.formAlumno.invalid){
       return;
     }
-    this.saveAlumno();
+    if(this.idAlumno != null) {
+      this.updateAlumno();
+    } else {
+      this.saveAlumno();
+    }
+    
   }
 
   saveAlumno() {
-
+    this.listAlumnos.push(this.formAlumno.value);
+    localStorage.setItem('data', JSON.stringify(this.listAlumnos))
+    this.modifyAlumno.emit(this.formAlumno.value);
     this.modalReference.close();
   }
 
+  updateAlumno() {
+    this.listAlumnos[this.idAlumno].nombre = this.formAlumno.value.nombre;
+    this.listAlumnos[this.idAlumno].apellido = this.formAlumno.value.apellido;
+    this.listAlumnos[this.idAlumno].email = this.formAlumno.value.email;
+    this.listAlumnos[this.idAlumno].contacto = this.formAlumno.value.contacto;
+
+    localStorage.setItem('data', JSON.stringify(this.listAlumnos))
+    this.modifyAlumno.emit(this.formAlumno.value);
+    this.modalReference.close();
+  }
+
+  validatorRestrucJson() {
+    let data = {
+
+      
+    }
+    return data;
+  }
+
   callModalService(mdAlumno){
+    this.inicializator();
     this.modalReference = this.modalService.open(mdAlumno, { size: 'lg', backdrop: 'static' });
   }
 

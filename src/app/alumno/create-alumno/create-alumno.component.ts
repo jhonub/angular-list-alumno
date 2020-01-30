@@ -136,8 +136,6 @@ export class CreateAlumnoComponent implements OnInit {
       contacto:this.formAlumno.value.contacto,
       idCurso:this.formAlumno.value.cursos.id
     }
-    console.log(data);
-    
     return data;
   }
 

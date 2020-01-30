@@ -71,9 +71,10 @@ export class CreateAlumnoComponent implements OnInit {
     this.formAlumno.get('apellido').setValue(this.listAlumnos[this.idAlumno].apellido)
     this.formAlumno.get('email').setValue(this.listAlumnos[this.idAlumno].email)
     this.formAlumno.get('contacto').setValue(this.listAlumnos[this.idAlumno].contacto)
-    console.log(this.validatorRestrucJson().idCurso);
-    
-    //this.formAlumno.get('cursos').setValue(this.validatorRestrucJson().idCurso)
+    for(let curso of this.listCursos)
+      if(curso.id == this.listAlumnos[this.idAlumno].idCurso){
+       this.formAlumno.get('cursos').setValue(curso);
+      }
   }
   
   saveSubmitAlumno(){
@@ -116,11 +117,12 @@ export class CreateAlumnoComponent implements OnInit {
   }
 
   updateAlumno() {
+    this.listAlumnos[this.idAlumno].idCurso = this.formAlumno.value.cursos.id;
     this.listAlumnos[this.idAlumno].nombre = this.formAlumno.value.nombre;
     this.listAlumnos[this.idAlumno].apellido = this.formAlumno.value.apellido;
     this.listAlumnos[this.idAlumno].email = this.formAlumno.value.email;
     this.listAlumnos[this.idAlumno].contacto = this.formAlumno.value.contacto;
-
+   
     localStorage.setItem('data', JSON.stringify(this.listAlumnos))
     this.modifyAlumno.emit(this.validatorRestrucJson());
     this.modalReference.close();

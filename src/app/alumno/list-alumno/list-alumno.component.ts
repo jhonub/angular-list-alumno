@@ -8,6 +8,7 @@ import { Component, OnInit } from '@angular/core';
 export class ListAlumnoComponent implements OnInit {
 
   public listAlumnos: any;
+  public listCursos:any;
 
   constructor() { }
 
@@ -18,6 +19,7 @@ export class ListAlumnoComponent implements OnInit {
   inicializator() {
     this.listAlumnos = [];
     this.validatorDataLocalSorage();
+    this.listCursosQuery();
   }
 
   validatorDataLocalSorage() {
@@ -28,7 +30,13 @@ export class ListAlumnoComponent implements OnInit {
       this.listAlumnos = JSON.parse(data);
     }
   }
-
+  listCursosQuery(){
+    this.listCursos=[
+      {id:1,nombre:'Matematica'},
+      {id:2, nombre:'Comunicacion'},
+      {id:3, nombre:'Fisica'}
+    ]
+  }
   validatorEmitAlumno(alumno) {
     this.listAlumnos.push(alumno);
   }

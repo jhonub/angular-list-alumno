@@ -1,6 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { debounceTime, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-create-alumno',
@@ -17,6 +19,9 @@ export class CreateAlumnoComponent implements OnInit {
   public formAlumno: FormGroup;
   public formValidatorStatus: Boolean;
   public listAlumnos: any;
+  public listCursos:any;
+  public search:any;
+  public formatter:any;
   public modalReference: NgbModalRef;
 
   get formValidator(){ return this.formAlumno.controls; }
@@ -35,6 +40,8 @@ export class CreateAlumnoComponent implements OnInit {
     this.listAlumnos = [];
     this.inicalizatorLocalStorage();
     this.inicializatorFormAlumno();
+    this.listCursosQuery();
+    this.searchCursos();
     if(this.idAlumno != null) {
       this.inicializatorEditAlumno();
     }
@@ -54,7 +61,8 @@ export class CreateAlumnoComponent implements OnInit {
       nombre:['', Validators.required],
       apellido:['', Validators.required],
       email:['', [Validators.required, Validators.email]],
-      contacto:['',[Validators.required, Validators.minLength(9)]]
+      contacto:['',[Validators.required, Validators.minLength(9)]],
+      cursos:['',[Validators.required]]
     })
   }
 
@@ -63,6 +71,9 @@ export class CreateAlumnoComponent implements OnInit {
     this.formAlumno.get('apellido').setValue(this.listAlumnos[this.idAlumno].apellido)
     this.formAlumno.get('email').setValue(this.listAlumnos[this.idAlumno].email)
     this.formAlumno.get('contacto').setValue(this.listAlumnos[this.idAlumno].contacto)
+    console.log(this.validatorRestrucJson().idCurso);
+    
+    //this.formAlumno.get('cursos').setValue(this.validatorRestrucJson().idCurso)
   }
   
   saveSubmitAlumno(){
@@ -74,14 +85,33 @@ export class CreateAlumnoComponent implements OnInit {
       this.updateAlumno();
     } else {
       this.saveAlumno();
+      
     }
     
   }
 
+  listCursosQuery(){
+    this.listCursos=[
+      {id:1,nombre:'Matematica'},
+      {id:2, nombre:'Comunicacion'},
+      {id:3, nombre:'Fisica'}
+    ]
+  }
+  searchCursos(){
+    this.search = (text$: Observable<string>) =>
+    text$.pipe(
+      debounceTime(200),
+      map(term => term === '' ? []
+        : this.listCursos.filter(v => v.nombre.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10))
+    )
+
+  this.formatter = (x: {nombre: string}) => x.nombre;
+  }
+
   saveAlumno() {
-    this.listAlumnos.push(this.formAlumno.value);
+    this.listAlumnos.push(this.validatorRestrucJson());
     localStorage.setItem('data', JSON.stringify(this.listAlumnos))
-    this.modifyAlumno.emit(this.formAlumno.value);
+    this.modifyAlumno.emit(this.validatorRestrucJson());
     this.modalReference.close();
   }
 
@@ -92,15 +122,20 @@ export class CreateAlumnoComponent implements OnInit {
     this.listAlumnos[this.idAlumno].contacto = this.formAlumno.value.contacto;
 
     localStorage.setItem('data', JSON.stringify(this.listAlumnos))
-    this.modifyAlumno.emit(this.formAlumno.value);
+    this.modifyAlumno.emit(this.validatorRestrucJson());
     this.modalReference.close();
   }
 
   validatorRestrucJson() {
     let data = {
-
-      
+      nombre:this.formAlumno.value.nombre,
+      apellido:this.formAlumno.value.apellido,
+      email:this.formAlumno.value.email,
+      contacto:this.formAlumno.value.contacto,
+      idCurso:this.formAlumno.value.cursos.id
     }
+    console.log(data);
+    
     return data;
   }
 

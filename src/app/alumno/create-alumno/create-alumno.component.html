@@ -36,13 +36,19 @@
                 <input
                     type="text"
                     formControlName="contacto"
-                    class="form-control msb-2"
+                    class="form-control mb-2"
                     placeholder="CELULAR"
                     [ngClass]="{ 'is-invalid': formValidatorStatus && formValidator.contacto.errors }">
                 <div *ngIf="formValidatorStatus && formValidator.contacto.errors" class="invalid-feedback">
                     <div *ngIf="formValidator.contacto.errors.required">* Obligatorio</div>
                     <div *ngIf="formValidator.contacto.errors.minlength">Digite 9 numeros*</div>
                 </div>
+                <ng-template #rt let-r="result" let-t="term">
+                    {{ r.nombre}}
+                </ng-template>
+                <input type="text" formControlName="cursos"  class="form-control mb-2" placeholder="CURSOS" [ngbTypeahead]="search"
+                [inputFormatter]="formatter" [resultTemplate]="rt"
+                >
             </div>
             <div class="modal-footer row">
               <button type="button" class="btn btn-info" (click)="saveSubmitAlumno()">GUARDAR</button>
